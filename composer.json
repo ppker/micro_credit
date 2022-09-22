@@ -1,6 +1,6 @@
 {
     "require": {
-        "php": ">=7.4.0",
+        "php": ">=7.2.0",
         "yiisoft/yii2": "~2.0.45",
         "yiisoft/yii2-httpclient": "^2.0",
         "abei2017/yii2-wx": "^1.3"
