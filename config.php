@@ -38,6 +38,12 @@ return [
                     ],
                     'pluralize' => false,
                 ],
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'go',
+                    'extraPatterns' => [
+                        'GET,POST init' => 'init',
+                    ],
+                    'pluralize' => false,
+                ],
             ],
         ],
 
