@@ -41,6 +41,7 @@ return [
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'go',
                     'extraPatterns' => [
                         'GET,POST init' => 'init',
+                        'GET,POST get_access_token' => 'get_access_token',
                     ],
                     'pluralize' => false,
                 ],
@@ -51,6 +52,10 @@ return [
             'parsers' => [
                 'application/json' => 'yii\web\JsonParser',
             ]
+        ],
+
+        'cache' => [
+            'class' => 'yii\caching\FileCache',
         ]
     ],
 

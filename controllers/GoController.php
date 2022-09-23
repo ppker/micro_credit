@@ -1,7 +1,6 @@
 <?php
 
 namespace micro\controllers;
-use abei2017\wx\Application;
 
 class GoController extends BaseController {
 
@@ -9,10 +8,15 @@ class GoController extends BaseController {
     public function actionInit() {
 
         # 验证微信服务器消息
-        $conf = \Yii::$app->params['wx']['mp'];
-        $app = new Application(['conf' => $conf]);
-        $handler = $app->driver('mp.server');
+        $handler = $this->wx->driver('mp.server');
         return $handler->serve();
+    }
+
+    public function actionGet_access_token() {
+
+        $handler = $this->wx->driver('mp.accessToken');
+        $access_token = $handler->getToken();
+        return ['code' => 0, 'data' => ['access_token' => $access_token]];
     }
 
 }

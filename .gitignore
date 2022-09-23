@@ -1,6 +1,7 @@
 /config/main-local.php
 /config/params-local.php
 /vendor
+/runtime
 /logs
 .tags
 .tags_sorted_by_file
