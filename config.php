@@ -56,7 +56,7 @@ return [
                 ],
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'apiv1',
                     'extraPatterns' => [
-                        'GET,POST cards' => 'cards',
+                        'POST cards' => 'cards',
                         
                     ],
                     'pluralize' => false,
