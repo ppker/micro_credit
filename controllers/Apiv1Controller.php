@@ -9,6 +9,10 @@ class Apiv1Controller extends BaseController {
     public function actionCards() {
 
         $use_data = $this->_body_params;
+        if (empty($use_data)) {
+            return ['code' => 1002, 'data' => [], 'message' => "请post参数"];
+        }
+
         $db = \Yii::$app->getDb();
         $re = $db->createCommand()->insert('credit_card', [
             'openid' => '',
