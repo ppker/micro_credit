@@ -28,6 +28,10 @@ return [
             'callback' => '', # 授权回调
         ],
 
+    ],
+    'bank_params' => [
+        'aes_key' => '',
+        'channelCode' => '',
     ]
 
 

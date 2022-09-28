@@ -19,6 +19,9 @@ return [
         ],
     ],
 
+    'timeZone' => 'Asia/Shanghai',
+    'language' => 'zh-CN',
+
     'components' => [
 
         'urlManager' => [
@@ -42,6 +45,19 @@ return [
                     'extraPatterns' => [
                         'GET,POST init' => 'init',
                         'GET,POST get_access_token' => 'get_access_token',
+                        'GET,POST get_wx_user' => 'get_wx_user',
+                        'GET,POST aes_encrypt' => 'aes_encrypt',
+                        'GET,POST aes_decrypt' => 'aes_decrypt',
+                        'GET,POST get_bank_list' => 'get_bank_list',
+                        'GET,POST make_card' => 'make_card',
+                        
+                    ],
+                    'pluralize' => false,
+                ],
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'apiv1',
+                    'extraPatterns' => [
+                        'GET,POST cards' => 'cards',
+                        
                     ],
                     'pluralize' => false,
                 ],
