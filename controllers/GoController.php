@@ -29,50 +29,48 @@ class GoController extends BaseController {
         return ['code' => 0, 'data' => $data, 'message' => 'success'];
     }
 
-    public function actionAes_encrypt() {
 
-        $data = [
-            "bankId" => 1,
-            "channelSerial" => "132784287788232",
-            "idCard" => "410823199908042578",
-            "name" => "张三",
-            "mobile" => "13323853821"
+    public function actionGet_bank_list() {
+
+        $api_url = "https://api.tuixiaogua.com/api/apiPush/getBank";
+        $headers = ['content-type' => 'application/json'];
+        $options = [];
+
+        $channelCode = \Yii::$app->params['bank_params']['channelCode'];
+        $params = [
+            'channelCode' => $channelCode
         ];
-        $data = json_encode($data, JSON_UNESCAPED_UNICODE);
-        $aes_key = str_pad('wn4323f6bdp2', 16, 'z');
-        // $data进行补位
-        $full_data = $data;
-        if (strlen($data) % 16) {
-            $full_data = str_pad($full_data, strlen($data) + 16 - (strlen($data) % 16), "\0");
-        }
+        $sign = $this->Aes_encrypt($params);
+        $use_sign = $sign['data']['encrypt_str'];
 
+        // var_dump($use_sign);die;
+        $response = $this->_http_client->post($api_url, ['channelCode' => $channelCode, 'sign' => $use_sign], $headers, $options)->setFormat(Client::FORMAT_JSON)->send();
 
-        $encrypt_str = openssl_encrypt($full_data, 'AES-128-ECB', $aes_key, OPENSSL_RAW_DATA, '');
-        $encrypt_str = base64_encode($encrypt_str);
-        return ['code' => 0, 'data' => ['encrypt_str' => $encrypt_str], 'message' => 'success'];
-
+        // $response->setFormat(Client::FORMAT_JSON);
+        $data = $response->getData();
+        return $data;
     }
-    
-    
+
     public function actionMake_card() {
 
         $post_data = $this->_body_params;
 
+        $channelCode = \Yii::$app->params['bank_params']['channelCode'];
         $sign_data = [
-            'channelCode' => '5LQBXM',
+            'channelCode' => $channelCode,
             'bankId' => $post_data['bankId'] ?? "3",
-            'name' => $post_data['name'] ?? "闫志鹏",
-            'mobile' => $post_data['mobile'] ?? "18521568316",
-            'idCard' => $post_data['idCard'] ?? "410821199012130076",
+            'name' => $post_data['name'] ?? "小豆子",
+            'mobile' => $post_data['mobile'] ?? "18521565316",
+            'idCard' => $post_data['idCard'] ?? "410821199812130076",
             'channelSerial' => time() . mt_rand(10000, 99999),
         ];
         $sign = $this->Aes_encrypt($sign_data);
         $use_sign = $sign['data']['encrypt_str'];
 
-        $api_url = "https://api.tuixiaogua.com/api/apiPush/getPage";
+        $api_url = "https://api.tuixiaogua.com/api/apiPush/getBank";
         $headers = ['content-type' => 'application/json'];
         $options = [];
-        $response = $this->_http_client->post($api_url, ['channelCode' => '5LQBXM', 'sign' => $use_sign], $headers, $options)->setFormat(Client::FORMAT_JSON)->send();
+        $response = $this->_http_client->post($api_url, ['channelCode' => $channelCode, 'sign' => $use_sign], $headers, $options)->setFormat(Client::FORMAT_JSON)->send();
 
         $data = $response->getData();
         return $data;
