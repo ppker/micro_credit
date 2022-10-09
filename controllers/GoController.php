@@ -38,7 +38,8 @@ class GoController extends BaseController {
 
         $channelCode = \Yii::$app->params['bank_params']['channelCode'];
         $params = [
-            'channelCode' => $channelCode
+            'channelCode' => $channelCode,
+            // 'bankName' => '平安银行',
         ];
         $sign = $this->Aes_encrypt($params);
         $use_sign = $sign['data']['encrypt_str'];
@@ -48,6 +49,20 @@ class GoController extends BaseController {
 
         // $response->setFormat(Client::FORMAT_JSON);
         $data = $response->getData();
+
+        // var_dump($data);die;
+        // 处理数据
+        $bank_icon = \Yii::$app->params['bank_icon'];
+        if (isset($data['data']) && !empty($data['data'])) {
+            foreach ($data['data'] as &$bank) {
+                // 判断银行 生成指定银行数据 
+                $bank['src'] = $bank_icon[$bank['bankId']]['icon_name'] ?? "bank_zgpa";
+                // $bank['src'] = "bank_zgpa";
+                $bank['mark'] = "易审批高额度";
+                $bank['award'] = "200+80";
+            }
+        }
+
         return $data;
     }
 
