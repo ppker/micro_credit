@@ -22,7 +22,7 @@ class GoController extends BaseController {
 
     public function actionGet_wx_user() {
 
-        $code = \Yii::$app->request->get('code');
+        $code = \Yii::$app->request->post('code');
         if (!$code) return ['code' => 1, 'data' => [], 'message' => '缺少参数code'];
         $handler = $this->wx->driver('mp.oauth');
         $data = $handler->user();

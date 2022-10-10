@@ -27,3 +27,33 @@ create table if not exists `credit_card` (
   KEY `channelSerial` (`channelSerial`),
   KEY `update_at` (`update_at`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4;
+
+
+CREATE TABLE if not exists `user` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `openid` varchar(64) NOT NULL DEFAULT '' COMMENT 'openid',
+  `nickname` varchar(24) NOT NULL DEFAULT '' COMMENT '微信昵称',
+  `sex` tinyint unsigned NOT NULL DEFAULT '0' COMMENT '1 => 男, 2 => 女, 0 => 未知',
+  `province` varchar(24) NOT NULL DEFAULT '' COMMENT '微信资料省份',
+  `city` varchar(24) NOT NULL DEFAULT '' COMMENT '微信资料城市',
+  `country` varchar(24) NOT NULL DEFAULT '' COMMENT '微信资料国家',
+  `headimgurl` varchar(128) NOT NULL DEFAULT '' COMMENT '微信资料头像',
+  `unionid` varchar(64) NOT NULL DEFAULT '' COMMENT '微信unionid',
+  `top_invite_code` varchar(16) NOT NULL DEFAULT '' COMMENT '被邀请的code',
+  `invite_code` varchar(16) NOT NULL DEFAULT '' COMMENT '我的邀请code',
+  `top_userid` int unsigned NOT NULL COMMENT '我的上线',
+  `phone` char(11) NOT NULL DEFAULT '' COMMENT '手机号',
+  `real_name` varchar(16) NOT NULL DEFAULT '' COMMENT '真实姓名',
+  `idcard` char(18) NOT NULL DEFAULT '' COMMENT '身份证号',
+  `email` varchar(64) NOT NULL DEFAULT '' COMMENT 'email',
+  `status` tinyint unsigned NOT NULL DEFAULT '0' COMMENT '0 => 正常, 1 => 禁封, 2 => 删除',
+  `create_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `openid` (`openid`),
+  KEY `real_name` (`real_name`),
+  KEY `top_invite_code` (`top_invite_code`),
+  KEY `invite_code` (`invite_code`),
+  KEY `top_userid` (`top_userid`),
+  KEY `update_at` (`update_at`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4;
