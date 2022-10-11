@@ -89,5 +89,18 @@ class BaseController extends ActiveController {
 
     }
 
+    public function makeInviteCode($num) {
+
+        $invite_code = "";
+        for ($i = 1; $i <= $num; $i++) {
+            $letter = chr(mt_rand(65, 90));
+            if (mt_rand(0, 99) >= 50) {
+                $letter = strtolower($letter);
+            }
+            $invite_code .= $letter;
+        }
+        return $invite_code;
+    }
+
 
 }

@@ -57,7 +57,9 @@ return [
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'apiv1',
                     'extraPatterns' => [
                         'POST cards' => 'cards',
-                        
+                        'POST user' => 'user',
+                        'POST get_user' => 'get_user',
+                         
                     ],
                     'pluralize' => false,
                 ],

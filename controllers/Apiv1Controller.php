@@ -36,4 +36,59 @@ class Apiv1Controller extends BaseController {
         if ($re) return ['code' => 0, 'data' => [], 'message' => "success"];
         return ['code' => 1003, 'data' => [], 'message' => "fail, 操作数据失败"];
     }
+
+    public function actionUser() {
+
+        $use_data = $this->_body_params;
+
+        if (in_array("", $use_data)) {
+            return ['code' => 1004, 'data' => [], 'message' => "参数异常"];
+        }
+
+        $db = \Yii::$app->getDb();
+
+        $re = $db->createCommand('select id from user where openid = :openid and status = :status')->bindValues([':openid' => $use_data['openid'], ':status' => 0])
+        ->queryAll();
+        if ($re) {
+            return ['code' => 1005, 'data' => [], 'message' => "您已经注册过了"];
+        } else {
+
+            $re2 = $db->createCommand('select id from user where invite_code = :invite_code and status = :status')->bindValues([':invite_code' => $use_data['top_invite_code'], ':status' => 0])->queryOne();
+
+            if (empty($re2)) {
+                return ['code' => 1006, 'data' => [], 'message' => "邀请码无效"];
+            } else {
+                $re = $db->createCommand()->insert('user', [
+                    'openid' => (string)$use_data['openid'],
+                    'nickname' => (string)$use_data['nickname'],
+                    'headimgurl' => (string)$use_data['headimgurl'],
+                    'top_invite_code' => (string)$use_data['top_invite_code'],
+                    'invite_code' => $this->makeInviteCode(8),
+                    'top_userid' => (int)$re2['id'],
+                    'phone' => (string)$use_data['mobile'],
+                    'real_name' => (string)$use_data['real_name'],
+                    'idcard' => (string)$use_data['idcard']
+                ])->execute();
+                if ($re) return ['code' => 0, 'data' => [], 'message' => "success"];
+                return ['code' => 1003, 'data' => [], 'message' => "fail, 操作数据失败"];
+            }
+
+        }
+    }
+
+
+    public function actionGet_user() {
+
+        $openid = $this->_body_params['openid'];
+        if (empty($openid)) return ['code' => 1004, 'data' => [], 'message' => "参数异常"];
+
+        $db = \Yii::$app->getDb();
+        $re = $db->createCommand('select id, openid, nickname, headimgurl, invite_code, top_userid, phone, real_name, idcard from user where openid = :openid and status = :status order by id desc')->bindValues([':openid' => $openid, ':status' => 0])->queryOne();
+
+        return ['code' => 0, 'data' => $re, 'message' => "success"];
+
+    }
+
+
+
 }
