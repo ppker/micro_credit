@@ -15,6 +15,7 @@ class BaseController extends ActiveController {
     protected $_request = null;
     protected $_body_params = null;
     protected $_http_client = null;
+    protected $_cache = null;
 
     public function init() {
 
@@ -24,6 +25,7 @@ class BaseController extends ActiveController {
         $this->_request = \Yii::$app->getRequest();
         $this->_body_params = \Yii::$app->getRequest()->getBodyParams();
         $this->_http_client = new Client(['transport' => 'yii\httpclient\CurlTransport']);
+        $this->_cache = \Yii::$app->cache;
     }
 
     public function behaviors() {

@@ -50,6 +50,8 @@ return [
                         'GET,POST aes_decrypt' => 'aes_decrypt',
                         'GET,POST get_bank_list' => 'get_bank_list',
                         'GET,POST make_card' => 'make_card',
+                        'POST get_bank' => 'get_bank',
+
                         
                     ],
                     'pluralize' => false,
