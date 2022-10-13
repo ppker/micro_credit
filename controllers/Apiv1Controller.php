@@ -85,6 +85,8 @@ class Apiv1Controller extends BaseController {
 
         $db = \Yii::$app->getDb();
         $re = $db->createCommand('select id, openid, nickname, headimgurl, invite_code, top_userid, phone, real_name, idcard from user where openid = :openid and status = :status order by id desc')->bindValues([':openid' => $openid, ':status' => 0])->queryOne();
+
+        if (empty($re)) return ['code' => 0, 'data' => $re, 'message' => "success"];
         if ($re['real_name']) {
             $pinyin_name = (new Pinyin())->name($re['real_name']);
             $pinyin_name = array_map(function($word) {
