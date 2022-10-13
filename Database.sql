@@ -59,5 +59,3 @@ CREATE TABLE if not exists `user` (
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4;
 
 
-
-
