@@ -84,18 +84,20 @@ class GoController extends BaseController {
         $channelCode = \Yii::$app->params['bank_params']['channelCode'];
         $sign_data = [
             'channelCode' => $channelCode,
-            'bankId' => $post_data['bankId'] ?? "3",
-            'name' => $post_data['name'] ?? "小豆子",
-            'mobile' => $post_data['mobile'] ?? "18521565316",
-            'idCard' => $post_data['idCard'] ?? "410821199812130076",
+            'bankId' => $post_data['bankId'] ?? "",
+            'name' => $post_data['name'] ?? "",
+            'mobile' => $post_data['mobile'] ?? "",
+            'idCard' => $post_data['idCard'] ?? "",
             'channelSerial' => time() . mt_rand(10000, 99999),
         ];
         $sign = $this->Aes_encrypt($sign_data);
         $use_sign = $sign['data']['encrypt_str'];
 
-        $api_url = "https://api.tuixiaogua.com/api/apiPush/getBank";
+        $api_url = "https://api.tuixiaogua.com/api/apiPush/getPage";
+
         $headers = ['content-type' => 'application/json'];
         $options = [];
+
         $response = $this->_http_client->post($api_url, ['channelCode' => $channelCode, 'sign' => $use_sign], $headers, $options)->setFormat(Client::FORMAT_JSON)->send();
 
         $data = $response->getData();
@@ -103,7 +105,7 @@ class GoController extends BaseController {
     }
 
     public function actionGet_bank() {
-
+        
         $post_data = $this->_body_params;
         $bank_id = $post_data['bank_id'] ?? "";
         if (!$bank_id) return ['code' => 1003, 'data' => [], 'message' => '缺少参数bank_id'];

@@ -17,6 +17,8 @@ class BaseController extends ActiveController {
     protected $_http_client = null;
     protected $_cache = null;
 
+
+
     public function init() {
 
         parent::init();
@@ -103,6 +105,9 @@ class BaseController extends ActiveController {
         }
         return $invite_code;
     }
+
+
+
 
 
 }
