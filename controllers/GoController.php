@@ -2,6 +2,7 @@
 
 namespace micro\controllers;
 use yii\httpclient\Client;
+use micro\models\CreditData;
 
 class GoController extends BaseController {
 
@@ -112,6 +113,26 @@ class GoController extends BaseController {
         $bank_data = \Yii::$app->params['bank_icon'];
 
         return ['code' => 0, 'data' => $bank_data[$bank_id] ?? [], 'message' => 'success'];
+    }
+
+    public function actionAdd_bank_card() {
+
+        $post_data = $this->_body_params;
+        if (in_array("", $post_data)) {
+            return ['code' => 1004, 'data' => [], 'message' => "参数异常"];
+        }
+
+        return (new CreditData())->addBankCard($post_data);
+
+    }
+
+    public function actionGet_bank_card() {
+
+        $post_data = $this->_body_params;
+        if (in_array("", $post_data)) {
+            return ['code' => 1004, 'data' => [], 'message' => "参数异常"];
+        }
+        return (new CreditData())->getBankCard($post_data);
     }
 
 

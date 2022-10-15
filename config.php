@@ -9,6 +9,10 @@ return [
     'aliases' => [
         '@micro' => __DIR__,
     ],
+
+    'timeZone' => 'Asia/Shanghai',
+    'language' => 'zh-CN',
+
     'components' => [
         'db' => [
             'class' => 'yii\db\Connection',
@@ -17,12 +21,6 @@ return [
             'password' => '',
             'charset' => 'utf8',
         ],
-    ],
-
-    'timeZone' => 'Asia/Shanghai',
-    'language' => 'zh-CN',
-
-    'components' => [
 
         'urlManager' => [
             'enablePrettyUrl' => true,
@@ -51,6 +49,8 @@ return [
                         'GET,POST get_bank_list' => 'get_bank_list',
                         'GET,POST make_card' => 'make_card',
                         'POST get_bank' => 'get_bank',
+                        'POST add_bank_card' => 'add_bank_card',
+                        'POST get_bank_card' => 'get_bank_card',
 
                         
                     ],

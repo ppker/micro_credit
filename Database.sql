@@ -58,4 +58,20 @@ CREATE TABLE if not exists `user` (
   KEY `update_at` (`update_at`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4;
 
+create table if not exists `bank_bag` (
+  `id` int unsigned not null auto_increment,
+  `openid` varchar(64) not null default '' comment 'openid',
+  `name` varchar(16) NOT NULL DEFAULT '' COMMENT '持卡人姓名',
+  `card_num` varchar(24) NOT NULL DEFAULT '' COMMENT '银行卡号',
+  `bank_name` varchar(24) NOT NULL DEFAULT '' COMMENT '所属银行',
+  `mobile` char(11) NOT NULL DEFAULT '' COMMENT '银行卡预留手机号',
+  `user_id` int unsigned not null COMMENT '用户id',
+  `status` tinyint unsigned NOT NULL DEFAULT '0' COMMENT '0 => 正常, 1 => 禁封, 2 => 删除',
+  `create_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `openid` (`openid`),
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4;
+
 
