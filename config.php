@@ -51,8 +51,7 @@ return [
                         'POST get_bank' => 'get_bank',
                         'POST add_bank_card' => 'add_bank_card',
                         'POST get_bank_card' => 'get_bank_card',
-
-                        
+                        'POST get_bank_order' => 'get_bank_order'
                     ],
                     'pluralize' => false,
                 ],

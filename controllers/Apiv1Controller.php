@@ -3,6 +3,7 @@
 namespace micro\controllers;
 use yii\httpclient\Client;
 use Overtrue\Pinyin\Pinyin;
+use micro\models\CreditData;
 
 class Apiv1Controller extends BaseController {
 
@@ -14,15 +15,24 @@ class Apiv1Controller extends BaseController {
             return ['code' => 1002, 'data' => [], 'message' => "请post参数"];
         }
 
+        // 获取用户信息
+        $user_data = [];
+        if (isset($use_data['idCard']) && $use_data['idCard']) {
+            $user_data = (new CreditData())->getUserInfoByIdCard($use_data['idCard']);
+            if (empty($user_data)) $user_data = [];
+        }
+
+
         $db = \Yii::$app->getDb();
         $re = $db->createCommand()->insert('credit_card', [
-            'openid' => '',
+            'openid' => $user_data['openid'] ?? "",
             'unionid' => '',
+            'userid' => $user_data['id'] ?? "0",
             'bankId' => (int)$use_data['bankId'],
             'name' => $use_data['name'] ?? "",
             'mobile' => $use_data['mobile'] ?? "",
             'idCard' => $use_data['idCard'] ?? "",
-            'channelSerial' => (int)$use_data['channelSerial'],
+            'channelSerial' => (string)$use_data['channelSerial'],
             'applyCompleted' => $use_data['applyCompleted'] ?? "",
             'applyCompletedData' => $use_data['applyCompletedData'] ?? "",
             'applicationStatus' => $use_data['applicationStatus'] ?? "",

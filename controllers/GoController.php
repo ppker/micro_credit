@@ -81,15 +81,21 @@ class GoController extends BaseController {
     public function actionMake_card() {
 
         $post_data = $this->_body_params;
+        
+        $time_str = str_replace(".", "", microtime(true));
+        $time_str = str_pad($time_str, 16, '0');
+        $channelSerial = $time_str . (string)mt_rand(10000, 99999);
+        // 自己提交一份打底
+        (new CreditData())->addCardOrder($post_data, $channelSerial);
 
         $channelCode = \Yii::$app->params['bank_params']['channelCode'];
         $sign_data = [
-            'channelCode' => $channelCode,
+            'channelCode' => (string)$channelCode,
             'bankId' => $post_data['bankId'] ?? "",
             'name' => $post_data['name'] ?? "",
             'mobile' => $post_data['mobile'] ?? "",
             'idCard' => $post_data['idCard'] ?? "",
-            'channelSerial' => time() . mt_rand(10000, 99999),
+            'channelSerial' => (string)$channelSerial
         ];
         $sign = $this->Aes_encrypt($sign_data);
         $use_sign = $sign['data']['encrypt_str'];
@@ -135,14 +141,16 @@ class GoController extends BaseController {
         return (new CreditData())->getBankCard($post_data);
     }
 
+    public function actionGet_bank_order() {
 
+        $post_data = $this->_body_params;
+        if (in_array("", $post_data)) {
+            return ['code' => 1004, 'data' => [], 'message' => "参数异常"];
+        }
+        return (new CreditData())->getBankOrder($post_data);
+
+    }
 
 
 
 }
-
-
-
-
-
-
