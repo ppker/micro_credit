@@ -109,6 +109,12 @@ class Apiv1Controller extends BaseController {
 
     }
 
+    public function actionGet_user_id() {
+
+        $id = $this->_body_params['userid'];
+        $user_data = (new CreditData())->getUserInfoById($id);
+        return ['code' => 0, 'data' => $user_data ?: [], 'message' => "success"];
+    }
 
 
 }

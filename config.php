@@ -60,6 +60,7 @@ return [
                         'POST cards' => 'cards',
                         'POST user' => 'user',
                         'POST get_user' => 'get_user',
+                        'POST get_user_id' => 'get_user_id',
                          
                     ],
                     'pluralize' => false,

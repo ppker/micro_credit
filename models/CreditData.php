@@ -199,5 +199,15 @@ class CreditData extends \yii\base\BaseObject {
     }
 
 
+    public function getUserInfoById($id) {
+
+        $user_info = $this->_db->createCommand("select id, nickname, phone, real_name, headimgurl from user where id = :id order by id desc")->bindValues([
+            ':id' => $id
+        ])->queryOne();
+
+        return $user_info;
+    }
+
+
 
 }
