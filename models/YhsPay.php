@@ -64,10 +64,9 @@ class YhsPay extends \yii\base\BaseObject {
 
     public function msectime() {
 
-    　　list($msec, $sec) = explode(' ', microtime());
-    　　$msectime = (float)sprintf('%.0f', (floatval($msec) + floatval($sec)) * 1000);
-     
-    　　return $msectime;
+        list($msec, $sec) = explode(' ', microtime());
+        $str_time = (float)sprintf('%.0f', (floatval($msec) + floatval($sec)) * 1000);
+        return $str_time;
     }
 
     public function get_orderno() {
@@ -101,7 +100,7 @@ class YhsPay extends \yii\base\BaseObject {
             'amount' => '100',
         ];
 
-        $params['body'] => $this->getEncrypt($body);
+        $params['body'] = $this->getEncrypt($body);
 
         $headers = ['content-type' => 'application/json'];
         $options = [];

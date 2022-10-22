@@ -192,6 +192,7 @@ class GoController extends BaseController {
     public function actionPay_to() {
 
         $result = (new YhsPay())->pay_for();
+        return $result;
     }
 
 
