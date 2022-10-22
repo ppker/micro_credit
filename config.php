@@ -55,6 +55,7 @@ return [
                         'POST get_team' => 'get_team',
                         'GET,POST get_new_bank_list' => 'get_new_bank_list',
                         'POST get_wallet' => 'get_wallet',
+                        'GET,POST pay_to' => 'pay_to',
                     ],
                     'pluralize' => false,
                 ],
