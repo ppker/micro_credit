@@ -12,6 +12,14 @@ class CreditData extends \yii\base\BaseObject {
         $this->_db = \Yii::$app->getDb();
     }
 
+    const PAY_TYPE = [
+        '1' => '核卡',
+        '2' => '激活',
+        '3' => '首刷',
+        '4' => '直推',
+        '5' => '间接推',
+        '6' => '提现',
+    ];
 
     public function addBankCard($data) {
 
@@ -60,7 +68,8 @@ class CreditData extends \yii\base\BaseObject {
             'mobile' => (string)$data['mobile'],
             'idCard' => (string)$data['idCard'],
             'channelSerial' => (string)$order_no,
-            'mark' => (string)$data['mark']
+            'mark' => (string)$data['mark'],
+            'frontend_bank_id' => (int)$data['frontend_bank_id']
         ])->execute();
         return $re;
     }
@@ -206,6 +215,44 @@ class CreditData extends \yii\base\BaseObject {
         ])->queryOne();
 
         return $user_info;
+    }
+
+    public function getWalletData($data) {
+
+        $wallet_data_list = $this->_db->createCommand("select * from user_earning where user_id = :user_id")->bindValues([':user_id' => $data['userid']])->queryAll();
+        $total_money = $this->_db->createCommand("select sum(money_one) as total_money from user_earning where user_id = :user_id and pay_type != 6")->bindValues([':user_id' => $data['userid']])->queryScalar();
+        // 提现金额
+        $total_out_money = $this->_db->createCommand("select sum(money_one) as total_money from user_earning where user_id = :user_id and pay_type = 6")->bindValues([':user_id' => $data['userid']])->queryScalar();
+
+        // 处理list数据
+        $show_bank_list = \Yii::$app->params['show_bank_list'];
+        $api_server_bankid = \Yii::$app->params['api_server_bankid'];
+        if (!empty($wallet_data_list)) {
+            $order_ids = array_column($wallet_data_list, 'channelSerial');
+            $order_data_list = $this->_db->createCommand("select userid, frontend_bank_id, name, mobile, channelSerial, create_at from credit_card where channelSerial in (" . implode(",", $order_ids) . ") and mark = '0'")->queryAll();
+
+            $order_data_list = array_column($order_data_list, null, 'channelSerial');
+            foreach ($wallet_data_list as $key => &$wallet) {
+
+                if (6 == $wallet['pay_type']) {
+                    $wallet['order_title'] = '提现';
+                } else {
+                    // 张三丰 - 华夏核卡[核卡佣金]
+                    $wallet['name'] = $order_data_list[$wallet['channelSerial']]['name'] ?? "";
+                    $wallet['frontend_bank_id'] = $order_data_list[$wallet['channelSerial']]['frontend_bank_id'] ?? "";
+                    $wallet['create_at'] = $order_data_list[$wallet['channelSerial']]['create_at'] ?? "";
+
+                    $show_bank_list_info = $show_bank_list[$wallet['frontend_bank_id'] - 1] ?? [];
+                    $wallet['order_title'] = $wallet['name'] . " - " . $show_bank_list_info['bankName'];
+
+                    $wallet['tag_title'] = self::PAY_TYPE[$wallet['pay_type']] . "佣金";
+                }
+            }
+        }
+
+
+
+        return ['code' => 0, 'data' => ['wallet_data_list' => $wallet_data_list, 'total_money' => (float)$total_money, 'total_out_money' => (float)$total_out_money, 'balance' => (float)($total_money - $total_out_money)], 'message' => 'success'];
     }
 
 

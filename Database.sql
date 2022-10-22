@@ -80,4 +80,39 @@ create table if not exists `bank_bag` (
   KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4;
 
+### 订单价格表 暂时不用
+create table if not exists `order_credit_price` (
+  `id` bigint unsigned not null auto_increment,
+  `channelSerial` char(21) NOT NULL DEFAULT '' COMMENT '流水号',
+  `settle_type` varchar(24) NOT NULL DEFAULT '' COMMENT '结算标准，首刷，核卡，新户核卡+首刷',
+  `money_one` decimal(8,0) unsigned not null default 0 comment '第一部分金额',
+  `money_two` decimal(8,0) unsigned not null default 0 comment '第二部分金额',
+  `money_late` decimal(8,0) unsigned not null default 0 comment '勉强完成最低金额',
+  `over_sk_days` smallint unsigned NOT NULL DEFAULT '0' COMMENT '首刷最短天数',
+  `mark` varchar(64) NOT NULL DEFAULT '' COMMENT '备注',
+  `create_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `channelSerial` (`channelSerial`),
+  KEY `update_at` (`update_at`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4;
+
+
+### 收入记录表
+create table if not exists `user_earning` (
+  `id` bigint unsigned not null auto_increment,
+  `user_id` int unsigned NOT NULL default '0',
+  `openid` varchar(64) not null default '' comment 'openid',
+  `channelSerial` char(21) NOT NULL DEFAULT '' COMMENT '流水号',
+  `settle_type` varchar(24) NOT NULL DEFAULT '' COMMENT '结算标准，首刷，核卡, 或者是其他奖励',
+  `money_one` decimal(10,2) unsigned not null default "0.00" comment '佣金',
+  `mark` varchar(64) NOT NULL DEFAULT '' COMMENT '备注',
+  `create_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `channelSerial` (`channelSerial`),
+  KEY `user_id` (`user_id`),
+  KEY `update_at` (`update_at`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4;
+
 

@@ -3,6 +3,7 @@
 namespace micro\controllers;
 use yii\httpclient\Client;
 use micro\models\CreditData;
+use micro\models\YhsPay;
 
 class GoController extends BaseController {
 
@@ -35,6 +36,8 @@ class GoController extends BaseController {
 
         $cache_key = str_replace("/", "_", __METHOD__);
         $data = $this->_cache->get($cache_key);
+
+        // $data = [];
 
         if (empty($data)) {
             $api_url = "https://api.tuixiaogua.com/api/apiPush/getBank";
@@ -78,6 +81,15 @@ class GoController extends BaseController {
         return $data;
     }
 
+    public function actionGet_new_bank_list() {
+
+        $bank_new_list_data = \Yii::$app->params['show_bank_list'];
+        return ['code' => 0, 'data' => $bank_new_list_data ?: [], 'message' => 'success'];
+    }
+
+
+
+
     public function actionMake_card() {
 
         $post_data = $this->_body_params;
@@ -116,9 +128,20 @@ class GoController extends BaseController {
         $post_data = $this->_body_params;
         $bank_id = $post_data['bank_id'] ?? "";
         if (!$bank_id) return ['code' => 1003, 'data' => [], 'message' => '缺少参数bank_id'];
-        $bank_data = \Yii::$app->params['bank_icon'];
+        $bank_data = \Yii::$app->params['show_bank_list'];
 
-        return ['code' => 0, 'data' => $bank_data[$bank_id] ?? [], 'message' => 'success'];
+        $need_data = [];
+        if (!empty($bank_data)) {
+            foreach($bank_data as $val) {
+                if ($val['api_bank_id'] == $bank_id) {
+                    $need_data = $val;
+                    // 替换真正的bank_id
+                    $need_data['real_bank_id'] = \Yii::$app->params['api_server_bankid'][$bank_id] ?? 0;
+                }
+            }
+        }
+
+        return ['code' => 0, 'data' => $need_data, 'message' => 'success'];
     }
 
     public function actionAdd_bank_card() {
@@ -148,7 +171,27 @@ class GoController extends BaseController {
             return ['code' => 1004, 'data' => [], 'message' => "参数异常"];
         }
         return (new CreditData())->getBankOrder($post_data);
+    }
 
+    public function actionGet_team() {
+
+        return ['code' => 0, 'data' => [], 'message' => 'success'];
+    }
+
+
+    public function actionGet_wallet() {
+
+        $post_data = $this->_body_params;
+        if (in_array("", $post_data)) {
+            return ['code' => 1004, 'data' => [], 'message' => "参数异常"];
+        }
+        return (new CreditData())->getWalletData($post_data);
+    }
+
+
+    public function actionPay_to() {
+
+        $result = (new YhsPay())->pay_for();
     }
 
 

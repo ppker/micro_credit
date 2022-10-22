@@ -51,7 +51,10 @@ return [
                         'POST get_bank' => 'get_bank',
                         'POST add_bank_card' => 'add_bank_card',
                         'POST get_bank_card' => 'get_bank_card',
-                        'POST get_bank_order' => 'get_bank_order'
+                        'POST get_bank_order' => 'get_bank_order',
+                        'POST get_team' => 'get_team',
+                        'GET,POST get_new_bank_list' => 'get_new_bank_list',
+                        'POST get_wallet' => 'get_wallet',
                     ],
                     'pluralize' => false,
                 ],
@@ -61,6 +64,7 @@ return [
                         'POST user' => 'user',
                         'POST get_user' => 'get_user',
                         'POST get_user_id' => 'get_user_id',
+                        'POST pay_result' => 'pay_result',
                          
                     ],
                     'pluralize' => false,
@@ -76,7 +80,27 @@ return [
 
         'cache' => [
             'class' => 'yii\caching\FileCache',
-        ]
+        ],
+
+        'log' => [
+            // 'traceLevel' => 3,
+            'flushInterval' => 1,
+            'targets' => [
+                [
+                    'class' => 'yii\log\FileTarget',
+                    'exportInterval' => 1,
+                    'levels' => ['info', 'error', 'warning'],
+                    'logFile' => '@app/runtime/logs/api/'.date('Ymd').'api.log',
+                    'logVars' => [],
+                    'categories' => [
+                        'api',
+                    ]
+                ],
+            ],
+        ],
+
+
+
     ],
 
 

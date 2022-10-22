@@ -24,25 +24,137 @@ class Apiv1Controller extends BaseController {
 
 
         $db = \Yii::$app->getDb();
-        $re = $db->createCommand()->insert('credit_card', [
-            'openid' => $user_data['openid'] ?? "",
-            'unionid' => '',
-            'userid' => $user_data['id'] ?? "0",
-            'bankId' => (int)$use_data['bankId'],
-            'name' => $use_data['name'] ?? "",
-            'mobile' => $use_data['mobile'] ?? "",
-            'idCard' => $use_data['idCard'] ?? "",
-            'channelSerial' => (string)$use_data['channelSerial'],
-            'applyCompleted' => $use_data['applyCompleted'] ?? "",
-            'applyCompletedData' => $use_data['applyCompletedData'] ?? "",
-            'applicationStatus' => $use_data['applicationStatus'] ?? "",
-            'applicationStatusDate' => $use_data['applicationStatusDate'] ?? "",
-            'isNewUser' => (int)$use_data['isNewUser'],
-            'activated' => $use_data['activated'] ?? "",
-            'activationDate' => $use_data['activationDate'] ?? "",
-            'firstUsed' => $use_data['firstUsed'] ?? "",
-            'firstUsedDate' => $use_data['firstUsedDate'] ?? "",
-        ])->execute();
+
+        $show_bank_list = \Yii::$app->params['show_bank_list'];
+        $api_server_bankid = \Yii::$app->params['api_server_bankid'];
+
+        // 根据渠道商 bank_id 回溯自己的bank配置数据
+        // 查询订单的基底数据
+        $order_base_data = $db->createCommand("select * from credit_card where channelSerial = :channelSerial and mark = '0' order by id asc")->bindValues([
+            ':channelSerial' => (string)$use_data['channelSerial']
+        ])->queryOne();
+        $frontend_bank_id = $order_base_data['frontend_bank_id'] ?? "";
+        if (empty($frontend_bank_id)) return ['code' => 1004, 'data' => [], 'message' => "订单数据不存在"];
+
+        $api_bank_id_key = $frontend_bank_id;
+        $settle_type = $show_bank_list[$api_bank_id_key - 1]['settle_type'];
+        $order_bank_info = $show_bank_list[$api_bank_id_key - 1] ?? [];
+
+        $do_date = date('Y-m-d', strtotime($order_base_data['create_at']));
+        $do_date_30 = date('Y-m-d', strtotime("$do_date +30 days"));
+        $today = date('Y-m-d');
+
+        $pass = false;
+        if ($today >= $do_date_30) { // 过期了
+            $pass = true;
+        }
+
+
+        if (!$pass) {
+            // 计算订单结算的金额
+            $pay_type = 0; // 1=>核卡, 2=>激活, 3=>首刷
+
+            // var_dump($settle_type);die;
+            $pay_money = 0;
+            if (trim($use_data['applicationStatus']) == 'P') { // 核卡通过
+                if ($settle_type == "核卡" || $settle_type == "新户核卡+首刷") { // 核卡和新户核卡+首刷才给钱
+                    $pay_money = $order_bank_info['money_one'];
+                    $pay_type = 1;
+                }
+            }
+            if (trim($use_data['activated']) == 'P') { // 激活
+                if ($settle_type == "激活") {
+                    $pay_money = $order_bank_info['money_one'];
+                    $pay_type = 2;
+                }
+            }
+            if (trim($use_data['firstUsed']) == 'P') { // 首刷
+                if ($settle_type == "首刷") {
+                    $pay_type = 3;
+                    // 截止天数
+                    $later_date = $order_bank_info['over_sk_days'];
+                    // 截止日期
+                    $later_date_string = date('Y-m-d', strtotime("$do_date " . "+{$later_date} day"));
+
+                    if ($today < $later_date_string) { // 最短期限之内的首刷
+                        $pay_money = $order_bank_info['money_one'];
+                    } else {
+                        $pay_money = $order_bank_info['money_late'];
+                    }
+
+                    
+                } elseif ($settle_type == "新户核卡+首刷") {
+                    $pay_type = 3;
+                    // 截止天数
+                    $later_date = $order_bank_info['over_sk_days'];
+                    // 截止日期
+                    $later_date_string = date('Y-m-d', strtotime("$do_date " . "+{$later_date} day"));
+
+                    if ($today < $later_date_string) { // 最短期限之内的首刷
+                        $pay_money = $order_bank_info['money_two'];
+                    } else {
+                        $pay_money = $order_bank_info['money_late'];
+                    }
+                }
+            }
+        }
+
+        // 走事务
+        $transaction = $db->beginTransaction();
+        try {
+            $re = $db->createCommand()->insert('credit_card', [
+                'openid' => $user_data['openid'] ?? "",
+                'unionid' => '',
+                'userid' => $user_data['id'] ?? "0",
+                'bankId' => (int)$use_data['bankId'],
+                'name' => $use_data['name'] ?? "",
+                'mobile' => $use_data['mobile'] ?? "",
+                'idCard' => $use_data['idCard'] ?? "",
+                'channelSerial' => (string)$use_data['channelSerial'],
+                'applyCompleted' => $use_data['applyCompleted'] ?? "",
+                'applyCompletedData' => $use_data['applyCompletedData'] ?? "",
+                'applicationStatus' => $use_data['applicationStatus'] ?? "",
+                'applicationStatusDate' => $use_data['applicationStatusDate'] ?? "",
+                'isNewUser' => (int)$use_data['isNewUser'],
+                'activated' => $use_data['activated'] ?? "",
+                'activationDate' => $use_data['activationDate'] ?? "",
+                'firstUsed' => $use_data['firstUsed'] ?? "",
+                'firstUsedDate' => $use_data['firstUsedDate'] ?? "",
+            ])->execute();
+
+
+            // 30天之后不予结算
+            if (!$pass && $pay_money > 0) {
+                // 结算金额
+                // 幂等性
+                $re0 = $db->createCommand("select id, update_at from user_earning where channelSerial = :channelSerial and user_id = :user_id and pay_type = :pay_type")->bindValues([
+                    ':channelSerial' => (string)$use_data['channelSerial'],
+                    ':user_id' => $user_data['id'] ?? "0",
+                    ':pay_type' => $pay_type,
+                ])->queryOne();
+
+                if (!$re0) {
+                    $re1 = $db->createCommand()->insert('user_earning', [
+                        'user_id' => $user_data['id'] ?? "0",
+                        'openid' => $user_data['openid'] ?? "",
+                        'channelSerial' => (string)$use_data['channelSerial'],
+                        'settle_type' => (string)$settle_type,
+                        'money_one' => $pay_money,
+                        'pay_type' => $pay_type,
+                    ])->execute();
+                }
+
+                
+            }
+            
+            $transaction->commit();
+        } catch(\Exception $e) {
+            $transaction->rollBack();
+            throw $e;
+        } catch(\Throwable $e) {
+            $transaction->rollBack();
+            throw $e;
+        }
 
         if ($re) return ['code' => 0, 'data' => [], 'message' => "success"];
         return ['code' => 1003, 'data' => [], 'message' => "fail, 操作数据失败"];
@@ -114,6 +226,18 @@ class Apiv1Controller extends BaseController {
         $id = $this->_body_params['userid'];
         $user_data = (new CreditData())->getUserInfoById($id);
         return ['code' => 0, 'data' => $user_data ?: [], 'message' => "success"];
+    }
+
+
+    public function actionPay_result() {
+
+        $data = $this->_body_params;
+        // $re = \Yii::info($data, 'api');
+        \Yii::info($data, 'api');
+        $c = \Yii::$app->log;
+        // var_dump(\Yii::$app->log);
+
+        return ['code' => 0, 'data' => $data, 'message' => "success"];
     }
 
 
