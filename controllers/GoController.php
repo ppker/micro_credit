@@ -188,10 +188,59 @@ class GoController extends BaseController {
         return (new CreditData())->getWalletData($post_data);
     }
 
+    public function actionGet_bank_bag() {
+
+        $post_data = $this->_body_params;
+        if (in_array("", $post_data)) {
+            return ['code' => 1004, 'data' => [], 'message' => "参数异常"];
+        }
+        return (new CreditData())->getBankBag($post_data);
+    }
+
+
+    public function actionWithdraw() {
+
+        $post_data = $this->_body_params;
+        if (in_array("", $post_data)) {
+            return ['code' => 1004, 'data' => [], 'message' => "参数异常"];
+        }
+        return (new YhsPay())->doWithdraw($post_data);
+    }
+
+
+
+
 
     public function actionPay_to() {
 
-        $result = (new YhsPay())->pay_for();
+        // $result = (new YhsPay())->pay_for();
+        // $result = (new YhsPay())->test();
+        
+        /*$data = [
+            'entOrderNo' => "166643484447130062821",
+            'pfOrderNo' => '1583768654250881024',
+            'applyTime' => '2022-10-22 18:34:06'
+        ];
+
+        $sign = "cNAk8OF4P02ytXKO4HVe9zuc72TDw/eQk1BY2RZ+FJkWqi1RWf3ZZIEQnLRdoCts3kVpm0tfWbY9mLGw9DNSu07a8EoFiFy8MsFztyLqswmwoMW+sxfCsAY2ERnL2QUK7UBXUaiVAD+Ouo78mww9A9fhbenQwEwJ0G3LOb8hPsxupmIGaAgeZqNWpAXsEbomR0w/ufLLs/SC4a++k0gh8h4/c8dNTsWRCfJRs0E79vmhezJUTDAgZet9JPaABo6laREOgiQtLB4IKXCiulLDdWwLMO+yhPS/GOwL7caN64U53zMIV/apbkJV68nMM4Xfg8OpayOrUYA/YS3Dr/vwBQ==";
+        $re = (new YhsPay())->signCheck($data, $sign);
+        var_dump($re);die;*/
+
+        $data = [
+            'paymentModel' => '100',
+            'amount' => '100',
+            'finishTime' => '2022-10-22 19:13:15',
+            'fee' => '0',
+            'entOrderNo' => '166643686982890081380',
+            'refOrderNo' => '1583777141039149056',
+            'applyTime' => '2022-10-22 19:07:50',
+            'status' => '300',
+        ];
+
+        $sign = 'Jh7QFdLtmpFqGYET00GC0y+z4h5UE3gUD04fq8wl/v/cS7PIUVoLT/6LLSdkgWjZIN/WUXpILk0YBWOmJ00BaZpm02sph2SDZhk7cTuM0wmYXfq6ViYO6pfYodZq9CP/MWVvtXgfMtEFCnAOq2faYhi9JuiLN6mrxKBz4/x5hkLkntuTb+RbJzD3hsKARr1Fcdn17nlRlKPSCbwAybd0PDk0dNy1za4LyDfD5VloiICnsBlf3SuQl3pMdeAkb7CARPlTvu2phNwY90OoF52Eo4b0dzj4uhuqaHLrnvqeFULS22tanios8YsZx/hYMy6LFeuyn9pxiMzmYrBARxM3rw==';
+        $re = (new YhsPay())->signCheck($data, $sign);
+        var_dump($re);die;
+
         return $result;
     }
 

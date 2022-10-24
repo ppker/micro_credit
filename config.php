@@ -56,6 +56,8 @@ return [
                         'GET,POST get_new_bank_list' => 'get_new_bank_list',
                         'POST get_wallet' => 'get_wallet',
                         'GET,POST pay_to' => 'pay_to',
+                        'POST get_bank_bag' => 'get_bank_bag',
+                        'POST withdraw' => 'withdraw',
                     ],
                     'pluralize' => false,
                 ],

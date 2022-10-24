@@ -217,12 +217,17 @@ class CreditData extends \yii\base\BaseObject {
         return $user_info;
     }
 
+
     public function getWalletData($data) {
 
         $wallet_data_list = $this->_db->createCommand("select * from user_earning where user_id = :user_id")->bindValues([':user_id' => $data['userid']])->queryAll();
-        $total_money = $this->_db->createCommand("select sum(money_one) as total_money from user_earning where user_id = :user_id and pay_type != 6")->bindValues([':user_id' => $data['userid']])->queryScalar();
+        $total_money = $this->_db->createCommand("select sum(money_one) as total_money from user_earning where user_id = :user_id and pay_type not in (6, 7)")->bindValues([':user_id' => $data['userid']])->queryScalar();
         // 提现金额
         $total_out_money = $this->_db->createCommand("select sum(money_one) as total_money from user_earning where user_id = :user_id and pay_type = 6")->bindValues([':user_id' => $data['userid']])->queryScalar();
+
+        // 提现失败 系统退款金额
+        $total_refund_money = $this->_db->createCommand("select sum(money_one) as total_money from user_earning where user_id = :user_id and pay_type = 7")->bindValues([':user_id' => $data['userid']])->queryScalar();
+
 
         // 处理list数据
         $show_bank_list = \Yii::$app->params['show_bank_list'];
@@ -236,7 +241,9 @@ class CreditData extends \yii\base\BaseObject {
 
                 if (6 == $wallet['pay_type']) {
                     $wallet['order_title'] = '提现';
-                } else {
+                } elseif (7 == $wallet['pay_type']) {
+                    $wallet['order_title'] = '退款';
+                }else {
                     // 张三丰 - 华夏核卡[核卡佣金]
                     $wallet['name'] = $order_data_list[$wallet['channelSerial']]['name'] ?? "";
                     $wallet['frontend_bank_id'] = $order_data_list[$wallet['channelSerial']]['frontend_bank_id'] ?? "";
@@ -250,9 +257,18 @@ class CreditData extends \yii\base\BaseObject {
             }
         }
 
+        // 实际提现金额
+        $real_total_out_money = sprintf("%.2f", $total_out_money - $total_refund_money);
+
+        return ['code' => 0, 'data' => ['wallet_data_list' => $wallet_data_list, 'total_money' => (float)$total_money, 'total_out_money' => (float)$real_total_out_money, 'balance' => sprintf("%.2f", (float)($total_money - $real_total_out_money))], 'message' => 'success'];
+    }
 
 
-        return ['code' => 0, 'data' => ['wallet_data_list' => $wallet_data_list, 'total_money' => (float)$total_money, 'total_out_money' => (float)$total_out_money, 'balance' => (float)($total_money - $total_out_money)], 'message' => 'success'];
+    public function getBankBag($data) {
+
+        $bank_bag_list = $this->_db->createCommand("select * from bank_bag where user_id = :user_id and status = 0 order by id desc")->bindValues([':user_id' => (int)$data['user_id']])
+        ->queryAll();
+        return ['code' => 0, 'data' => $bank_bag_list ?: [], 'message' => "success"];
     }
 
 

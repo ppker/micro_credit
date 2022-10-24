@@ -4,6 +4,7 @@ namespace micro\controllers;
 use yii\httpclient\Client;
 use Overtrue\Pinyin\Pinyin;
 use micro\models\CreditData;
+use micro\models\YhsPay;
 
 class Apiv1Controller extends BaseController {
 
@@ -232,13 +233,26 @@ class Apiv1Controller extends BaseController {
     public function actionPay_result() {
 
         $data = $this->_body_params;
-        // $re = \Yii::info($data, 'api');
+
+        if (empty($data)) return ['handled' => 'SUCCESS'];
+
+        // 数据安全校验
+        $re_num = (new YhsPay())->signCheck($data['body'], $data['sign']);
+        
+        if (1 == $re_num) {
+            if (!in_array($data['body']['status'], [100, 200, 400])) { // 付款失败, 进行退款 
+                $re1 = (new YhsPay())->refund($data['body']); // entOrderNo
+            }
+        }
+
+        // 记录日志
         \Yii::info($data, 'api');
         $c = \Yii::$app->log;
-        // var_dump(\Yii::$app->log);
 
-        return ['code' => 0, 'data' => $data, 'message' => "success"];
+        return ['handled' => 'SUCCESS'];
     }
+
+
 
 
 }
