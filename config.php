@@ -58,6 +58,8 @@ return [
                         'GET,POST pay_to' => 'pay_to',
                         'POST get_bank_bag' => 'get_bank_bag',
                         'POST withdraw' => 'withdraw',
+                        'GET,POST send_sms' => 'send_sms',
+
                     ],
                     'pluralize' => false,
                 ],

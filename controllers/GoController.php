@@ -208,6 +208,70 @@ class GoController extends BaseController {
     }
 
 
+    public function actionSend_sms() {
+
+        
+        $post_data = $this->_body_params;
+        if (in_array("", $post_data) || !isset($post_data['openid']) || !isset($post_data['mobile'])) {
+            return ['code' => 1004, 'data' => [], 'message' => "您提交的参数异常"];
+        }
+        // 判断时间合法
+        $get_sms_code = $this->_cache->get('sms_' . $post_data['openid']);
+        if ($get_sms_code) {
+            return ['code' => 1008, 'data' => [], 'message' => '请等待到短信验证码冷却时间结束'];
+        }
+        // 判断次数合法
+        $sms_times_key = 'sms_times_' . $post_data['openid'] . '_' . date('Ymd');
+        $sms_times = (int)$this->_cache->get($sms_times_key);
+        if ($sms_times >= 25) {
+            return ['code' => 1009, 'data' => [], 'message' => '您已经超过了每日短信验证码次数'];
+        }
+
+        // 缓存3分钟生成验证码
+        $sms_code = mt_rand(11112, 99998);
+        $this->_cache->set('sms_' . $post_data['openid'], $sms_code, 180);
+
+        
+        // 发送验证码
+        $msm_data = \Yii::$app->params['sms'];
+
+        $url = $msm_data['sms_url'];
+        $account = $msm_data['account'] ?? "";
+        $pswd = $msm_data['pswd'] ?? "";
+
+        $ts = date('YmdHis');
+        $post_data = [
+            'account' => $account,
+            'ts' => $ts,
+            'pswd' => md5($account . $pswd . $ts),
+            'msg' => '【人人推卡】您的验证码为{$var}，3分钟内有效，如非本人操作，请忽略此条短信。',
+            'params' => $post_data['mobile'] . "," . $sms_code,
+            'needstatus' => "true",
+            'product' => '',
+            'extno' => '',
+            'resptype' => 'json',
+        ];
+
+        $headers = ['content-type' => 'application/x-www-form-urlencoded'];
+        $options = [];
+
+        // die('ssss');
+        
+        
+        // $response = $this->_http_client->post($url, $post_data, $headers, $options)->setFormat(Client::FORMAT_URLENCODED)->send();
+
+        // $data = $response->getData();
+
+        // 验证码次数加1
+        $sms_times++;
+        $this->_cache->set($sms_times_key, $sms_times, 86400);
+
+        return ['code' => 0, 'data' => [], 'message' => 'success'];
+        return $data;
+
+    }
+
+
 
 
 

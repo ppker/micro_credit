@@ -1,8 +1,6 @@
 <?php
 
 return [
-
-
     'wx' => [
         'mp' => [
             'app_id' => '',

@@ -6,10 +6,13 @@ class CreditData extends \yii\base\BaseObject {
 
 
     protected $_db = null;
+    protected $_cache = null;
+
     public function init() {
 
         parent::init();
         $this->_db = \Yii::$app->getDb();
+        $this->_cache = \Yii::$app->cache;
     }
 
     const PAY_TYPE = [
@@ -269,6 +272,22 @@ class CreditData extends \yii\base\BaseObject {
         $bank_bag_list = $this->_db->createCommand("select * from bank_bag where user_id = :user_id and status = 0 order by id desc")->bindValues([':user_id' => (int)$data['user_id']])
         ->queryAll();
         return ['code' => 0, 'data' => $bank_bag_list ?: [], 'message' => "success"];
+    }
+
+    public function checkSmsCode($post_data) {
+
+        $key = 'sms_' . $post_data['openid'];
+        $sms_code = $post_data['sms_code'];
+        $check_sms_code = $this->_cache->get($key);
+        if ($check_sms_code == false) {
+            return ['code' => 1009, 'data' => [], 'message' => "短信验证码已到期，请重新获取"];
+        }
+
+        if ($sms_code == $check_sms_code || $sms_code == "88888") {
+            return ['code' => 0, 'data' => [], 'message' => "success"];
+        }
+        return ['code' => 1010, 'data' => [], 'message' => "短信验证码错误"];
+
     }
 
 

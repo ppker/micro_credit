@@ -165,9 +165,30 @@ class Apiv1Controller extends BaseController {
 
         $use_data = $this->_body_params;
 
-        if (in_array("", $use_data)) {
-            return ['code' => 1004, 'data' => [], 'message' => "参数异常"];
+        /*if (in_array("", $use_data)) {
+            return ['code' => 1004, 'data' => [], 'message' => "参数异常,请重新提交"];
+        }*/
+
+        if (!isset($use_data['mobile']) || !isset($use_data['idcard'])) {
+            return ['code' => 1004, 'data' => [], 'message' => "参数异常,请重新提交"];
         }
+
+        if (!preg_match('/(^((\+86)|(86))?(1[3-9])\d{9}$)|(^(0\d{2,3})-?(\d{7,8})$)/', $use_data['mobile'])) {
+            return ['code' => 1004, 'data' => [], 'message' => "请提交正确的手机号"];
+        }
+
+        if (!preg_match('/^[1-9]\d{5}(19|20)?\d{2}(0[1-9]|1[012])(0[1-9]|[12]\d|3[01])\d{3}(\d|X)$/i', $use_data['idcard'])) {
+            return ['code' => 1004, 'data' => [], 'message' => "请提交正确的身份证号"];
+        }
+
+        if (in_array("", [$use_data['openid'], $use_data['msgcode']])) {
+            return ['code' => 1004, 'data' => [], 'message' => "参数异常,请重新提交"];
+        }
+
+        // 验证短信验证码
+        $sms_res = (new CreditData())->checkSmsCode(['openid' => $use_data['openid'], 'sms_code' => $use_data['msgcode']]);
+
+        if (0 != $sms_res['code']) return $sms_res;
 
         $db = \Yii::$app->getDb();
 
@@ -177,8 +198,8 @@ class Apiv1Controller extends BaseController {
             return ['code' => 1005, 'data' => [], 'message' => "您已经注册过了"];
         } else {
 
-            $re2 = $db->createCommand('select id from user where invite_code = :invite_code and status = :status')->bindValues([':invite_code' => $use_data['top_invite_code'], ':status' => 0])->queryOne();
-
+            $re2 = $db->createCommand('select id from user where binary invite_code = :invite_code and status = :status')->bindValues([':invite_code' => $use_data['top_invite_code'], ':status' => 0])->queryOne();
+            // var_dump($re2);die;
             if (empty($re2)) {
                 return ['code' => 1006, 'data' => [], 'message' => "邀请码无效"];
             } else {
@@ -205,7 +226,7 @@ class Apiv1Controller extends BaseController {
 
         $openid = $this->_body_params['openid'];
         if (empty($openid)) return ['code' => 1004, 'data' => [], 'message' => "参数异常"];
-
+        
         $db = \Yii::$app->getDb();
         $re = $db->createCommand('select id, openid, nickname, headimgurl, invite_code, top_userid, phone, real_name, idcard from user where openid = :openid and status = :status order by id desc')->bindValues([':openid' => $openid, ':status' => 0])->queryOne();
 
@@ -238,7 +259,7 @@ class Apiv1Controller extends BaseController {
 
         // 数据安全校验
         $re_num = (new YhsPay())->signCheck($data['body'], $data['sign']);
-        
+
         if (1 == $re_num) {
             if (!in_array($data['body']['status'], [100, 200, 400])) { // 付款失败, 进行退款 
                 $re1 = (new YhsPay())->refund($data['body']); // entOrderNo
