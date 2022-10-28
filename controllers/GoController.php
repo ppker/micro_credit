@@ -88,6 +88,18 @@ class GoController extends BaseController {
         return ['code' => 0, 'data' => $bank_new_list_data ?: [], 'message' => 'success'];
     }
 
+    public function actionGet_new_bank_list2() {
+
+        $bank_new_list_data = \Yii::$app->params['show_bank_list'];
+        $api_server_bankid = \Yii::$app->params['api_server_bankid'];
+
+        foreach ($bank_new_list_data as &$val) {
+            $val['real_bank_id'] = $api_server_bankid[$val['api_bank_id']] ?? 0;
+        }
+
+        return ['code' => 0, 'data' => $bank_new_list_data ?: [], 'message' => 'success'];
+    }
+
 
 
 

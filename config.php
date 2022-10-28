@@ -60,6 +60,7 @@ return [
                         'POST withdraw' => 'withdraw',
                         'GET,POST send_sms' => 'send_sms',
                         'POST get_name_pinyin' => 'get_name_pinyin',
+                        'POST get_new_bank_list2' => 'get_new_bank_list2',
 
                     ],
                     'pluralize' => false,
