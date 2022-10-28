@@ -275,16 +275,15 @@ class GoController extends BaseController {
         // die('ssss');
         
         
-        // $response = $this->_http_client->post($url, $post_data, $headers, $options)->setFormat(Client::FORMAT_URLENCODED)->send();
+        $response = $this->_http_client->post($url, $post_data, $headers, $options)->setFormat(Client::FORMAT_URLENCODED)->send();
 
-        // $data = $response->getData();
+        $data = $response->getData();
 
         // 验证码次数加1
         $sms_times++;
         $this->_cache->set($sms_times_key, $sms_times, 86400);
 
-        return ['code' => 0, 'data' => [], 'message' => 'success'];
-        return $data;
+        return ['code' => 0, 'data' => $data, 'message' => 'success'];
 
     }
 

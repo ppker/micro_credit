@@ -31,6 +31,8 @@ CREATE TABLE if not exists `credit_card` (
   KEY `update_at` (`update_at`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4;
 
+alter table credit_card add column frontend_bank_id int unsigned NOT NULL default 0 comment '前端订的bank_id' after `payment`;
+
 
 
 
@@ -106,6 +108,29 @@ create table if not exists `user_earning` (
   `channelSerial` char(21) NOT NULL DEFAULT '' COMMENT '流水号',
   `settle_type` varchar(24) NOT NULL DEFAULT '' COMMENT '结算标准，首刷，核卡, 或者是其他奖励',
   `money_one` decimal(10,2) unsigned not null default "0.00" comment '佣金',
+  `mark` varchar(64) NOT NULL DEFAULT '' COMMENT '备注',
+  `create_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `channelSerial` (`channelSerial`),
+  KEY `user_id` (`user_id`),
+  KEY `update_at` (`update_at`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4;
+
+alter table user_earning add column pay_type tinyint unsigned NOT NULL default 0 comment '1=>核卡, 2=>激活, 3=>首刷' after `money_one`;
+
+
+
+
+
+CREATE TABLE `user_earning` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int unsigned NOT NULL DEFAULT '0',
+  `openid` varchar(64) NOT NULL DEFAULT '' COMMENT 'openid',
+  `channelSerial` char(21) NOT NULL DEFAULT '' COMMENT '流水号',
+  `settle_type` varchar(24) NOT NULL DEFAULT '' COMMENT '结算标准，首刷，核卡, 或者是其他奖励',
+  `money_one` decimal(10,2) unsigned NOT NULL DEFAULT '0.00' COMMENT '佣金',
+  `pay_type` tinyint unsigned NOT NULL DEFAULT '0' COMMENT '1=>核卡, 2=>激活, 3=>首刷, 4=>下线',
   `mark` varchar(64) NOT NULL DEFAULT '' COMMENT '备注',
   `create_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
