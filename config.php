@@ -59,6 +59,7 @@ return [
                         'POST get_bank_bag' => 'get_bank_bag',
                         'POST withdraw' => 'withdraw',
                         'GET,POST send_sms' => 'send_sms',
+                        'POST get_name_pinyin' => 'get_name_pinyin',
 
                     ],
                     'pluralize' => false,

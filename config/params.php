@@ -79,6 +79,7 @@ return [
             'over_sk_days' => 16, // 刷卡期限16天
             'api_bank_id' => "1",
             'show_money' => "260",
+            'poster_url' => 'poster_bank_pinganyh.png',
         ],
         1 => [
             'icon_name' => 'bank_zgpa',
@@ -95,6 +96,7 @@ return [
             'over_sk_days' => 16, // 刷卡期限16天
             'api_bank_id' => "2",
             'show_money' => '130+100',
+            'poster_url' => 'poster_bank_pinganyh.png',
         ],
 
         2 => [
@@ -112,6 +114,7 @@ return [
             'over_sk_days' => 0, // 刷卡期限16天
             'api_bank_id' => "3",
             'show_money' => '240',
+            'poster_url' => 'poster_bank_guangdayh.png',
         ],
 
         3 => [
@@ -129,6 +132,7 @@ return [
             'over_sk_days' => 0, // 刷卡期限16天
             'api_bank_id' => "4",
             'show_money' => '80+160',
+            'poster_url' => 'poster_bank_guangdayh.png',
         ],
 
         4 => [
@@ -146,6 +150,7 @@ return [
             'over_sk_days' => 0, // 刷卡期限16天
             'api_bank_id' => "5",
             'show_money' => '110',
+            'poster_url' => 'poster_bank_zhongxinyh.png',
         ],
 
         5 => [
@@ -163,6 +168,7 @@ return [
             'over_sk_days' => 0, // 刷卡期限16天
             'api_bank_id' => "6",
             'show_money' => '200',
+            'poster_url' => 'poster_bank_huaxiayh.png',
         ],
 
         6 => [
@@ -180,6 +186,7 @@ return [
             'over_sk_days' => 0, // 刷卡期限16天
             'api_bank_id' => "7",
             'show_money' => '80',
+            'poster_url' => 'poster_bank_huaxiayh.png', // 假数据
         ],
 
         7 => [
@@ -197,6 +204,7 @@ return [
             'over_sk_days' => 0, // 刷卡期限16天
             'api_bank_id' => "8",
             'show_money' => '110',
+            'poster_url' => 'poster_bank_huaxiayh.png', // 假数据
         ],
 
         8 => [
@@ -214,6 +222,7 @@ return [
             'over_sk_days' => 0, // 刷卡期限16天
             'api_bank_id' => "9",
             'show_money' => '100',
+            'poster_url' => 'poster_bank_nanjingyh.png',
         ],
 
         9 => [
@@ -231,6 +240,7 @@ return [
             'over_sk_days' => 0, // 刷卡期限16天
             'api_bank_id' => "10",
             'show_money' => '70',
+            'poster_url' => 'poster_bank_changanyh.png',
         ],
 
         10 => [
@@ -248,6 +258,7 @@ return [
             'over_sk_days' => 0, // 刷卡期限16天
             'api_bank_id' => "11",
             'show_money' => '110',
+            'poster_url' => 'poster_bank_hankouyh.png',
         ],
 
         11 => [
@@ -265,6 +276,7 @@ return [
             'over_sk_days' => 0, // 刷卡期限16天
             'api_bank_id' => "12",
             'show_money' => '40',
+            'poster_url' => 'poster_bank_youzhengyh.png',
         ],
 
         12 => [
@@ -282,6 +294,7 @@ return [
             'over_sk_days' => 0, // 刷卡期限16天
             'api_bank_id' => "13",
             'show_money' => '110',
+            'poster_url' => 'poster_bank_hengfengyh.png',
         ],
 
         13 => [
@@ -299,6 +312,7 @@ return [
             'over_sk_days' => 0, // 刷卡期限16天
             'api_bank_id' => "14",
             'show_money' => '120',
+            'poster_url' => 'poster_bank_huaxiayh.png', // 假数据
         ],
 
         14 => [
@@ -316,6 +330,7 @@ return [
             'over_sk_days' => 0, // 刷卡期限16天
             'api_bank_id' => "15",
             'show_money' => '220',
+            'poster_url' => 'poster_bank_bohaiyh.png',
         ],
 
         15 => [
@@ -333,6 +348,7 @@ return [
             'over_sk_days' => 0, // 刷卡期限16天
             'api_bank_id' => "16",
             'show_money' => '110',
+            'poster_url' => 'poster_bank_shengjingyh.png',
         ],
 
         16 => [
@@ -350,6 +366,7 @@ return [
             'over_sk_days' => 0, // 刷卡期限16天
             'api_bank_id' => "17",
             'show_money' => '80',
+            'poster_url' => 'poster_bank_beibuwaiyh.png',
         ],
 
         17 => [
@@ -367,6 +384,7 @@ return [
             'over_sk_days' => 0, // 刷卡期限16天
             'api_bank_id' => "18",
             'show_money' => '110',
+            'poster_url' => 'poster_bank_jinshangyh.png',
         ],
 
         18 => [
@@ -384,6 +402,7 @@ return [
             'over_sk_days' => 0, // 刷卡期限16天
             'api_bank_id' => "19",
             'show_money' => '60',
+            'poster_url' => 'poster_bank_jiangxiyh.png',
         ],
 
         19 => [
@@ -401,6 +420,7 @@ return [
             'over_sk_days' => 0, // 刷卡期限16天
             'api_bank_id' => "20",
             'show_money' => '110',
+            'poster_url' => 'poster_bank_changshayh.png',
         ],
 
         20 => [
@@ -418,6 +438,7 @@ return [
             'over_sk_days' => 0, // 刷卡期限16天
             'api_bank_id' => "21",
             'show_money' => '40',
+            'poster_url' => 'poster_bank_jiansheyh.png',
         ],
 
     ],

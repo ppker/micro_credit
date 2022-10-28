@@ -4,6 +4,7 @@ namespace micro\controllers;
 use yii\httpclient\Client;
 use micro\models\CreditData;
 use micro\models\YhsPay;
+use Overtrue\Pinyin\Pinyin;
 
 class GoController extends BaseController {
 
@@ -175,7 +176,11 @@ class GoController extends BaseController {
 
     public function actionGet_team() {
 
-        return ['code' => 0, 'data' => [], 'message' => 'success'];
+        $post_data = $this->_body_params;
+        if (in_array("", $post_data)) {
+            return ['code' => 1004, 'data' => [], 'message' => "参数异常"];
+        }
+        return (new CreditData())->getMyTeam($post_data);
     }
 
 
@@ -269,6 +274,21 @@ class GoController extends BaseController {
         return ['code' => 0, 'data' => [], 'message' => 'success'];
         return $data;
 
+    }
+
+
+    public function actionGet_name_pinyin() {
+
+        $post_data = $this->_body_params;
+        if (empty($post_data['name'])) return ['code' => 0, 'data' => ['name' => ''], 'message' => 'success'];
+
+        $pinyin_name = (new Pinyin())->name($post_data['name']);
+        $pinyin_name = array_map(function($word) {
+            return ucfirst($word);
+        }, $pinyin_name);
+        $real_name_pinyin = implode("", $pinyin_name);
+
+        return ['code' => 0, 'data' => ['name' => $real_name_pinyin], 'message' => 'success'];
     }
 
 

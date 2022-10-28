@@ -290,6 +290,53 @@ class CreditData extends \yii\base\BaseObject {
 
     }
 
+    public function getMyTeam($post_data) {
+
+        // top_userid
+        $userid = intval($post_data['userid']);
+        $openid = (int)$post_data['openid'];
+        $top_userid = (int)$post_data['top_userid'];
+        // 推荐人 我的上线
+        $my_up_user = $this->_db->createCommand("select * from user where id = :id")->bindValues([':id' => $top_userid])->queryOne();
+
+        // 直推 我的下线
+        $my_down_users = $this->_db->createCommand("select * from user where top_userid = :id")->bindValues([':id' => $userid])->queryAll();
+
+        $direct_num_users = count($my_down_users);
+        $team_num_users = $direct_num_users + 1;
+        // 本月团队核卡数
+        if (empty($my_down_users)) $my_team_ids = [];
+        else $my_team_ids = array_column($my_down_users, 'id');
+        array_push($my_team_ids, $userid);
+
+        $use_team_ids = implode(",", $my_team_ids);
+
+        $current_month = date('Y-m-01 00:00:00');
+        $next_month = date('Y-m-01 00:00:00', strtotime('+1 month'));
+
+        if (isset($post_data['last_month']) && $post_data['last_month']) {
+            $current_month = date('Y-m-01 00:00:00', strtotime('-1 month'));
+            $next_month = date('Y-m-01 00:00:00');
+        }
+
+
+        $my_team_card_nums = $this->_db->createCommand("select count(id) as card_num, sum(money_one) as total_money from user_earning where user_id in (" . $use_team_ids . ") and update_at >= :current_month and update_at < :next_month and pay_type = 1")->bindValues([
+            ':current_month' => $current_month,
+            ':next_month' => $next_month
+        ])->queryOne();
+
+        return ['code' => 0, 'data' => [
+            'my_up_user' => $my_up_user ?: [],
+            'my_down_users' => $my_down_users ?: [],
+            'direct_num_users' => (int)$direct_num_users,
+            'team_num_users' => (int)$team_num_users,
+            'card_num' => $my_team_card_nums['card_num'] ?? 0,
+            'total_money' => $my_team_card_nums['total_money'] ?? 0
+        ], 'message' => "success"];
+
+    }
+
+
 
 
 }

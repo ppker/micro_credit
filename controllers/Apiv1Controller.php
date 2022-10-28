@@ -16,26 +16,32 @@ class Apiv1Controller extends BaseController {
             return ['code' => 1002, 'data' => [], 'message' => "请post参数"];
         }
 
-        // 获取用户信息
-        $user_data = [];
-        if (isset($use_data['idCard']) && $use_data['idCard']) {
+        // 查询订单的基底数据
+        $db = \Yii::$app->getDb();
+        $order_base_data = $db->createCommand("select * from credit_card where channelSerial = :channelSerial and mark = '0' order by id asc")->bindValues([
+            ':channelSerial' => (string)$use_data['channelSerial']
+        ])->queryOne();
+        $frontend_bank_id = $order_base_data['frontend_bank_id'] ?? "";
+        if (empty($frontend_bank_id) || empty($order_base_data)) return ['code' => 1004, 'data' => [], 'message' => "订单数据不存在"];
+
+
+        // 获取用户信息 通过 channelSerial 查询底部数据
+        $user_data = [
+            'id' => (int)$order_base_data['userid'],
+            'openid' => (string)$order_base_data['openid']
+        ];
+
+
+        /*if (isset($use_data['idCard']) && $use_data['idCard']) {
             $user_data = (new CreditData())->getUserInfoByIdCard($use_data['idCard']);
             if (empty($user_data)) $user_data = [];
-        }
-
-
-        $db = \Yii::$app->getDb();
+        }*/
 
         $show_bank_list = \Yii::$app->params['show_bank_list'];
         $api_server_bankid = \Yii::$app->params['api_server_bankid'];
 
         // 根据渠道商 bank_id 回溯自己的bank配置数据
-        // 查询订单的基底数据
-        $order_base_data = $db->createCommand("select * from credit_card where channelSerial = :channelSerial and mark = '0' order by id asc")->bindValues([
-            ':channelSerial' => (string)$use_data['channelSerial']
-        ])->queryOne();
-        $frontend_bank_id = $order_base_data['frontend_bank_id'] ?? "";
-        if (empty($frontend_bank_id)) return ['code' => 1004, 'data' => [], 'message' => "订单数据不存在"];
+        
 
         $api_bank_id_key = $frontend_bank_id;
         $settle_type = $show_bank_list[$api_bank_id_key - 1]['settle_type'];
