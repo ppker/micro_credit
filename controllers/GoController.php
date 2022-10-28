@@ -189,7 +189,9 @@ class GoController extends BaseController {
     public function actionGet_team() {
 
         $post_data = $this->_body_params;
-        if (in_array("", $post_data)) {
+        $use_data = $post_data;
+        unset($use_data['last_month']);
+        if (in_array("", $use_data)) {
             return ['code' => 1004, 'data' => [], 'message' => "参数异常"];
         }
         return (new CreditData())->getMyTeam($post_data);
