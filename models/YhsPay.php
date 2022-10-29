@@ -18,7 +18,7 @@ class YhsPay extends \yii\base\BaseObject {
         '7' => '退款',
     ];
 
-    protected $_publicKey = 'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApQyOIOBcA8Y8IlBQFKFGEwzUigCoF5n9hwTTAk6dywFYCHjd7XJn8FCL6AWtKvP6oWBiWXmeER8Z2uD0CN7YqKNKXLJRXA0YfcummtrCHOOt4nrPOn3QtUZm0HEY28vc765wgU3S2tm65Q5PhLTbrZtZ1qQeC2g/E355EYG0EYKaLy4R7Jd8wGt9VSkT/p0GBf52+B/leecx12QO0ZQCNQNbc2HmHUWAFZajHJPGgVyMOez98ybIrcW9h1MTpPUuo37QEBRM8nNRGut6ZTPCfkNyg+zq5pZ8vgrGFCzdFzvRqZOfbgVU2KQPUVLDlN81S3a6NOlCrjTNMMcVZsta/QIDAQAB';
+    protected $_publicKey = '';
 
     protected $_MAX_ENCRYPT_BLOCK = 245;
     protected $_MAX_DECRYPT_BLOCK = 256;
@@ -38,6 +38,7 @@ class YhsPay extends \yii\base\BaseObject {
         parent::init();
         $this->_db = \Yii::$app->getDb();
         $this->_http_client = new Client(['transport' => 'yii\httpclient\CurlTransport']);
+        $this->_publicKey = \Yii::$app->params['pay_yhs']['public_key'];
     }
 
 

@@ -304,6 +304,23 @@ class GoController extends BaseController {
         return ['code' => 0, 'data' => ['name' => $real_name_pinyin], 'message' => 'success'];
     }
 
+    public function actionGet_vip_apply() {
+
+        $bank_new_list_data = \Yii::$app->params['show_bank_list'];
+        $api_server_bankid = \Yii::$app->params['api_server_bankid'];
+        $vip_bank_list = \Yii::$app->params['vip_bank_list'];
+
+        $use_vip_bank_list = [];
+        foreach ($bank_new_list_data as &$val) {
+            $val['real_bank_id'] = $api_server_bankid[$val['api_bank_id']] ?? 0;
+            if (in_array($val['api_bank_id'], $vip_bank_list)) {
+                array_push($use_vip_bank_list, $val);
+            }
+        }
+        
+        return ['code' => 0, 'data' => $use_vip_bank_list ?: [], 'message' => 'success'];
+    }
+
 
 
 
