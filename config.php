@@ -62,6 +62,7 @@ return [
                         'POST get_name_pinyin' => 'get_name_pinyin',
                         'POST get_new_bank_list2' => 'get_new_bank_list2',
                         'POST get_vip_apply' => 'get_vip_apply',
+                        'POST get_quick_pass' => 'get_quick_pass',
 
                     ],
                     'pluralize' => false,

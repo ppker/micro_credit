@@ -317,8 +317,26 @@ class GoController extends BaseController {
                 array_push($use_vip_bank_list, $val);
             }
         }
-        
+
         return ['code' => 0, 'data' => $use_vip_bank_list ?: [], 'message' => 'success'];
+    }
+
+
+    public function actionGet_quick_pass() {
+
+        $bank_new_list_data = \Yii::$app->params['show_bank_list'];
+        $api_server_bankid = \Yii::$app->params['api_server_bankid'];
+        $quick_pass_list = \Yii::$app->params['quick_pass_list'];
+
+        $quick_pass_bank_list = [];
+        foreach ($bank_new_list_data as &$val) {
+            $val['real_bank_id'] = $api_server_bankid[$val['api_bank_id']] ?? 0;
+            if (in_array($val['api_bank_id'], $quick_pass_list)) {
+                array_push($quick_pass_bank_list, $val);
+            }
+        }
+
+        return ['code' => 0, 'data' => $quick_pass_bank_list ?: [], 'message' => 'success'];
     }
 
 
