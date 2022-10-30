@@ -58,6 +58,7 @@ return [
     ],
 
     'vip_bank_list' => [1, 3, 5, 6, 12, 14],
+    'quick_pass_list' => [2, 4, 17, 18, 21],
 
 
     // 客户端展示bank_list
