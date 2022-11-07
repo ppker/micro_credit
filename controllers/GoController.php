@@ -157,6 +157,7 @@ class GoController extends BaseController {
         return ['code' => 0, 'data' => $need_data, 'message' => 'success'];
     }
 
+
     public function actionAdd_bank_card() {
 
         $post_data = $this->_body_params;
@@ -337,6 +338,31 @@ class GoController extends BaseController {
         }
 
         return ['code' => 0, 'data' => $quick_pass_bank_list ?: [], 'message' => 'success'];
+    }
+
+
+    public function actionGet_poster_bank() {
+        
+        $post_data = $this->_body_params;
+        $bank_id = $post_data['bank_id'] ?? "";
+        $frontend_bank_id = $post_data['frontend_bank_id'] ?? "";
+
+        if (!$bank_id || !$frontend_bank_id) return ['code' => 1003, 'data' => [], 'message' => '缺少参数bank_id'];
+        $bank_data = \Yii::$app->params['show_bank_list'];
+
+        $need_data = [];
+        if (!empty($bank_data)) {
+            foreach($bank_data as $val) {
+                if ($val['api_bank_id'] == $frontend_bank_id) {
+                    $need_data = $val;
+                    // 替换真正的bank_id
+                    $need_data['real_bank_id'] = \Yii::$app->params['api_server_bankid'][$frontend_bank_id] ?? 0;
+                    break;
+                }
+            }
+        }
+
+        return ['code' => 0, 'data' => $need_data, 'message' => 'success'];
     }
 
 

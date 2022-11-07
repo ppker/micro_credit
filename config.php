@@ -63,6 +63,7 @@ return [
                         'POST get_new_bank_list2' => 'get_new_bank_list2',
                         'POST get_vip_apply' => 'get_vip_apply',
                         'POST get_quick_pass' => 'get_quick_pass',
+                        'POST get_poster_bank' => 'get_poster_bank',
 
                     ],
                     'pluralize' => false,
