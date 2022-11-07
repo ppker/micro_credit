@@ -7,6 +7,7 @@ class YhsPay extends \yii\base\BaseObject {
 
     protected $_db = null;
     protected $_http_client = null;
+    protected $_cache = null;
 
     const PAY_TYPE = [
         '1' => '核卡',
@@ -39,6 +40,7 @@ class YhsPay extends \yii\base\BaseObject {
         $this->_db = \Yii::$app->getDb();
         $this->_http_client = new Client(['transport' => 'yii\httpclient\CurlTransport']);
         $this->_publicKey = \Yii::$app->params['pay_yhs']['public_key'];
+        $this->_cache = \Yii::$app->cache;
     }
 
 
@@ -140,10 +142,21 @@ class YhsPay extends \yii\base\BaseObject {
 
         // userid, tx_money card_bag_id
         // 申请提现
+        if ((int)$data['tx_money'] < 1) {
+            return ['code' => 100555, 'data' => [], 'msg' => "最小提现金额为1元"];
+        }
+
+        // 判断时间
+        $now_hour = (int)date('H');
+        if (6 > $now_hour || 22 < $now_hour) {
+            return ['code' => 100557, 'data' => [], 'msg' => "早上6点之前，晚上10点之后不可申请提现"];
+        }
+        
         $user_info = $this->_db->createCommand("select * from user where id = :userid and openid = :openid and status = 0")->bindValues([
             ':userid' => (int)$data['userid'],
             ':openid' => (string)$data['openid']
         ])->queryOne();
+
         
         $tx_bank_card_info = $this->_db->createCommand("select * from bank_bag where id = :id and openid=:openid and status = 0")->bindValues([
             ':id' => (int)$data['card_bag_id'],
@@ -174,6 +187,16 @@ class YhsPay extends \yii\base\BaseObject {
             return ['code' => 100554, 'data' => [], 'msg' => "您申请提现的金额大于可提现的余额"];
         }
 
+        // 每日只能提现1次
+        $withdraw_key = "user_withdraw_" . (string)$user_info['idcard'] . "_" . date('Ymd');
+        $times_withdraw = (int)$this->_cache->get($withdraw_key);
+        if ($times_withdraw >= 1) {
+            // $this->_cache->delete($withdraw_key);
+            return ['code' => 100556, 'data' => [], 'msg' => "用户每天只能申请提现1次"];
+        } else { // 其实就是加锁
+            $this->_cache->set($withdraw_key, 1, 86400);
+        }
+
 
         $res_data = $this->pay_for($use_data);
 
@@ -187,6 +210,8 @@ class YhsPay extends \yii\base\BaseObject {
                 'money_one' => (int)$data['tx_money'],
                 'pay_type' => 6, // 提现
             ])->execute();
+        } else { // 提现失败 删除缓存 锁
+            $this->_cache->delete($withdraw_key);
         }
         
         return $res_data;
@@ -215,6 +240,13 @@ class YhsPay extends \yii\base\BaseObject {
     }
 
 
+    protected function get_user_info($id) {
+
+        $user_info = $this->_db->createCommand("select id, idcard, nickname, phone, real_name, headimgurl from user where id = :id order by id desc")->bindValues([
+            ':id' => $id
+        ])->queryOne();
+        return $user_info ?: [];
+    }
 
 
 
@@ -239,7 +271,14 @@ class YhsPay extends \yii\base\BaseObject {
             'pay_type' => 7, // 提现
         ])->execute();
 
-        if ($re1) return ['code' => 0, 'data' => [], 'message' => "成功"];
+        if ($re1) {
+
+            $user_info = $this->get_user_info((int)$tx_info['user_id']);
+            $withdraw_key = "user_withdraw_" . (string)$user_info['idcard'] . "_" . date('Ymd');
+            $this->_cache->delete($withdraw_key);
+            return ['code' => 0, 'data' => [], 'message' => "成功"];
+
+        }
         return ['code' => 1005, 'data' => [], 'message' => "退款失败"];
 
     }
