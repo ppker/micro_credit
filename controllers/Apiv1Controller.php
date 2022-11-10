@@ -12,6 +12,11 @@ class Apiv1Controller extends BaseController {
     public function actionCards() {
 
         $use_data = $this->_body_params;
+
+        // 记录日志
+        \Yii::info($use_data, 'api');
+        $c = \Yii::$app->log;
+
         if (empty($use_data)) {
             return ['code' => 1002, 'data' => [], 'message' => "请post参数"];
         }
