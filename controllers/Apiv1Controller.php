@@ -154,6 +154,32 @@ class Apiv1Controller extends BaseController {
                         'money_one' => $pay_money,
                         'pay_type' => $pay_type,
                     ])->execute();
+
+                    // 触发给导师A 2%，B 4% 佣金提成分红
+                    $user_b = $db->createCommand("select top_userid, real_name from user where id = :id")
+                    ->bindValues([':id' => (int)$user_data['id']])->queryOne();
+                    $user_b_id = $user_b['top_userid'] ?? "";
+                    if ($user_b_id) {
+                        $user_a = $db->createCommand("select top_userid, openid from user where id = :id")->bindValues([':id' => (int)$user_b_id])->queryOne();
+                        $user_a_id = $user_a['top_userid'] ?? "";
+
+                        $user_a_info = $db->createCommand("select openid from user where id = :id")->bindValues([':id' => $user_a_id])->queryOne();
+
+
+                        $insert_data = [
+                            [$user_b_id, $user_a['openid'] ?? "", (string)$use_data['channelSerial'], '团队-' . $user_b['real_name'] . '佣金分成', round($pay_money * 0.04, 2), 4]
+                        ];
+
+                        if ($user_a && $user_a_id) {
+                            array_push($insert_data, [
+                                $user_a_id, $user_a_info['openid'] ?? "", (string)$use_data['channelSerial'], '团队-' . $user_b['real_name'] . '佣金分成',
+                                round($pay_money * 0.02, 2), 5
+                            ]);
+                        }
+
+
+                        $re2 = $db->createCommand()->batchInsert('user_earning', ['user_id', 'openid', 'channelSerial', 'settle_type', 'money_one', 'pay_type'], $insert_data)->execute();
+                    }
                 }
 
                 
