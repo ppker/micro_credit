@@ -99,7 +99,7 @@ class CreditData extends \yii\base\BaseObject {
                     $ids = array_column($order_ids, 'bid');
                     $ids = implode(",", $ids);
 
-                    $order_data = $this->_db->createCommand("select * from credit_card where id in (". $ids .") order by id asc")->queryAll();
+                    $order_data = $this->_db->createCommand("select * from credit_card where id in (". $ids .") order by id desc")->queryAll();
                 }
                 break;
             case 'jjwc':
@@ -110,7 +110,7 @@ class CreditData extends \yii\base\BaseObject {
                     $ids = array_column($order_ids, 'bid');
                     $ids = implode(",", $ids);
 
-                    $order_data = $this->_db->createCommand("select * from credit_card where id in (". $ids .") order by id asc")->queryAll();
+                    $order_data = $this->_db->createCommand("select * from credit_card where id in (". $ids .") order by id desc")->queryAll();
                 }
                 break;
             case 'hkcg':
@@ -121,7 +121,7 @@ class CreditData extends \yii\base\BaseObject {
                     $ids = array_column($order_ids, 'bid');
                     $ids = implode(",", $ids);
 
-                    $order_data = $this->_db->createCommand("select * from credit_card where id in (". $ids .") order by id asc")->queryAll();
+                    $order_data = $this->_db->createCommand("select * from credit_card where id in (". $ids .") order by id desc")->queryAll();
                 }
                 break;
             case 'jhcg':
@@ -132,7 +132,7 @@ class CreditData extends \yii\base\BaseObject {
                     $ids = array_column($order_ids, 'bid');
                     $ids = implode(",", $ids);
 
-                    $order_data = $this->_db->createCommand("select * from credit_card where id in (". $ids .") order by id asc")->queryAll();
+                    $order_data = $this->_db->createCommand("select * from credit_card where id in (". $ids .") order by id desc")->queryAll();
                 }
                 break;
             case 'sscg':
@@ -143,7 +143,7 @@ class CreditData extends \yii\base\BaseObject {
                     $ids = array_column($order_ids, 'bid');
                     $ids = implode(",", $ids);
 
-                    $order_data = $this->_db->createCommand("select * from credit_card where id in (". $ids .") order by id asc")->queryAll();
+                    $order_data = $this->_db->createCommand("select * from credit_card where id in (". $ids .") order by id desc")->queryAll();
                 }
                 break;
             case 'wtg':
@@ -155,7 +155,7 @@ class CreditData extends \yii\base\BaseObject {
                     $ids = array_column($order_ids, 'bid');
                     $ids = implode(",", $ids);
 
-                    $order_data = $this->_db->createCommand("select * from credit_card where id in (". $ids .") order by id asc")->queryAll();
+                    $order_data = $this->_db->createCommand("select * from credit_card where id in (". $ids .") order by id desc")->queryAll();
                 }
                 break;
             case 'ytx':
@@ -167,7 +167,7 @@ class CreditData extends \yii\base\BaseObject {
                     $ids = array_column($order_ids, 'bid');
                     $ids = implode(",", $ids);
 
-                    $order_data = $this->_db->createCommand("select * from credit_card where id in (". $ids .") order by id asc")->queryAll();
+                    $order_data = $this->_db->createCommand("select * from credit_card where id in (". $ids .") order by id desc")->queryAll();
                 }
                 break;
 
