@@ -90,8 +90,16 @@ class CreditData extends \yii\base\BaseObject {
     public function getBankOrder($data) {
 
         $order_data = [];
+        $total_num = 0;
+        $page = 1;
         switch($data['type']) {
             case 'all':
+
+                $page = $data['page'] ?? 1;
+                $page = $page < 1 ? 1 : (int)$page;
+                $offset = (int)(10 * ($page - 1));
+                $limit = 10;
+
                 $order_ids = $this->_db->createCommand("select max(id) as bid, channelSerial from credit_card where userid = :userid group by channelSerial order by bid asc")->bindValues([
                     ':userid' => $data['user_id'] ?? ""
                 ])->queryAll();
@@ -99,7 +107,8 @@ class CreditData extends \yii\base\BaseObject {
                     $ids = array_column($order_ids, 'bid');
                     $ids = implode(",", $ids);
 
-                    $order_data = $this->_db->createCommand("select * from credit_card where id in (". $ids .") order by id desc")->queryAll();
+                    $order_data = $this->_db->createCommand("select * from credit_card where id in (". $ids . ")" . " order by id desc limit {$offset},{$limit}")->queryAll();
+                    $total_num = $this->_db->createCommand("select count(id) from credit_card where id in (". $ids . ")")->queryScalar();
                 }
                 break;
             case 'jjwc':
@@ -207,7 +216,7 @@ class CreditData extends \yii\base\BaseObject {
             }
         }
         
-        return ['code' => 0, 'data' => $order_data, 'message' => "success"];
+        return ['code' => 0, 'data' => $order_data, 'message' => "success", 'page' => $page, 'total' => intval($total_num)];
     }
 
 
