@@ -135,6 +135,7 @@ return [
             'api_bank_id' => "3",
             'show_money' => '100',
             'poster_url' => 'poster_bank_xingye.png',
+            'is_show' => 0,
         ],
 
         3 => [
@@ -344,7 +345,6 @@ return [
             'poster_url' => 'poster_bank_zhengzhou.png',
         ],
         15 => [
-
             'icon_name' => 'bank_shyh',
             'bankName' => "上海核卡+激活",
             'settlement_rule' => '新户首次申请上海银行信用卡，审核通过后，收到核卡短信通知，激活卡片后算成功办理此业务。\n【有效投放地区】上海、南京、苏州、无锡、常州、南通、杭州、宁波、绍兴、天津、成都、深圳、温州',
@@ -360,6 +360,7 @@ return [
             'api_bank_id' => "16",
             'show_money' => '200+30',
             'poster_url' => 'poster_bank_shanghai.png',
+            'is_show' => 0,
         ],
         16 => [
             'icon_name' => 'bank_njyh',

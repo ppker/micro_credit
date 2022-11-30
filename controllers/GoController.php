@@ -83,9 +83,19 @@ class GoController extends BaseController {
     }
 
     public function actionGet_new_bank_list() {
-        
+
         $bank_new_list_data = \Yii::$app->params['show_bank_list'];
-        return ['code' => 0, 'data' => $bank_new_list_data ?: [], 'message' => 'success'];
+        $out_data = [];
+        if ($bank_new_list_data) {
+            foreach ($bank_new_list_data as $kk => $val) {
+                if (isset($val['is_show']) && 0 == $val['is_show']) {
+
+                } else {
+                    array_push($out_data, $val);
+                }
+            }
+        }
+        return ['code' => 0, 'data' => $out_data ?: [], 'message' => 'success'];
     }
 
     public function actionGet_new_bank_list2() {
