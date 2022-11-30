@@ -69,7 +69,7 @@ class Apiv1Controller extends BaseController {
             // var_dump($settle_type);die;
             $pay_money = 0;
             if (trim($use_data['applicationStatus']) == 'P') { // 核卡通过
-                if ($settle_type == "核卡" || $settle_type == "新户核卡+首刷") { // 核卡和新户核卡+首刷才给钱
+                if ($settle_type == "核卡" || $settle_type == "新户核卡+首刷" || $settle_type == "新户核卡+激活") { // 核卡和新户核卡+首刷才给钱
                     $pay_money = $order_bank_info['money_one'];
                     $pay_type = 1;
                 }
@@ -77,6 +77,9 @@ class Apiv1Controller extends BaseController {
             if (trim($use_data['activated']) == 'P') { // 激活
                 if ($settle_type == "激活") {
                     $pay_money = $order_bank_info['money_one'];
+                    $pay_type = 2;
+                } elseif ($settle_type == "新户核卡+激活") {
+                    $pay_money = $order_bank_info['money_two'];
                     $pay_type = 2;
                 }
             }
