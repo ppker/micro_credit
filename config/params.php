@@ -190,6 +190,7 @@ return [
             'api_bank_id' => "6",
             'show_money' => '220',
             'poster_url' => 'poster_bank_huaxiayh.png',
+            'is_show' => 0,
         ],
         6 => [
             'icon_name' => 'bank_bhyh',
