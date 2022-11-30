@@ -58,7 +58,7 @@ return [
     ],
 
     'vip_bank_list' => [1, 3, 5, 6, 12, 14],
-    'quick_pass_list' => [2, 4, 17, 18, 21],
+    'quick_pass_list' => [2, 4, 17, 18],
 
     'api_server_bankid' => [
         '1' => '4',
@@ -134,7 +134,7 @@ return [
             'over_sk_days' => 0, // 刷卡期限16天
             'api_bank_id' => "3",
             'show_money' => '100',
-            'poster_url' => 'poster_bank_huaxiayh.png', // 假数据---
+            'poster_url' => 'poster_bank_xingye.png',
         ],
 
         3 => [
@@ -170,7 +170,7 @@ return [
             'over_sk_days' => 0, // 刷卡期限16天
             'api_bank_id' => "5",
             'show_money' => '170',
-            'poster_url' => 'poster_bank_huaxiayh.png', // 假数据 ---
+            'poster_url' => 'poster_bank_guangfa.png',
         ],
 
         5 => [
@@ -222,7 +222,7 @@ return [
             'over_sk_days' => 0, // 刷卡期限16天
             'api_bank_id' => "8",
             'show_money' => '130',
-            'poster_url' => 'poster_bank_bohaiyh.png', // 假数据 ----
+            'poster_url' => 'poster_bank_pufa.png',
         ],
         8 => [
             'icon_name' => 'bank_zhongyuan',
@@ -239,7 +239,7 @@ return [
             'over_sk_days' => 0, // 刷卡期限16天
             'api_bank_id' => "9",
             'show_money' => '100',
-            'poster_url' => 'poster_bank_huaxiayh.png', // 假数据 ----
+            'poster_url' => 'poster_bank_zhongyuan.png',
         ],
         9 => [
             'icon_name' => 'bank_hkyh',
@@ -290,7 +290,7 @@ return [
             'over_sk_days' => 0, // 刷卡期限16天
             'api_bank_id' => "12",
             'show_money' => '140',
-            'poster_url' => 'poster_bank_huaxiayh.png', // 假数据 ----
+            'poster_url' => 'poster_bank_ningbo.png',
         ],
         12 => [
             'icon_name' => 'bank_cayh',
@@ -341,7 +341,7 @@ return [
             'over_sk_days' => 0, // 刷卡期限16天
             'api_bank_id' => "15",
             'show_money' => '60',
-            'poster_url' => 'poster_bank_jinshangyh.png', // 假数据 ---
+            'poster_url' => 'poster_bank_zhengzhou.png',
         ],
         15 => [
 
@@ -393,7 +393,7 @@ return [
             'over_sk_days' => 0, // 刷卡期限16天
             'api_bank_id' => "18",
             'show_money' => '70',
-            'poster_url' => 'poster_bank_huaxiayh.png', // 假数据 ---- 
+            'poster_url' => 'poster_bank_qilu.png',
         ],
         18 => [
             'icon_name' => 'bank_msyh',
@@ -410,7 +410,7 @@ return [
             'over_sk_days' => 0, // 刷卡期限16天
             'api_bank_id' => "19",
             'show_money' => '160',
-            'poster_url' => 'poster_bank_huaxiayh.png', // 假数据  ----
+            'poster_url' => 'poster_bank_minsheng.png',
         ],
     ],
 
