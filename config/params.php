@@ -187,10 +187,10 @@ return [
             'money_two' => 0,
             'money_late' => 0,
             'over_sk_days' => 0, // 刷卡期限16天
-            'api_bank_id' => "6",
+            'api_bank_id' => "12",
             'show_money' => '220',
             'poster_url' => 'poster_bank_huaxiayh.png',
-            'is_show' => 0,
+            'is_show' => 1,
         ],
         6 => [
             'icon_name' => 'bank_bhyh',
