@@ -66,7 +66,7 @@ return [
         '3' => '26',
         '4' => '25',
         '5' => '74',
-        '6' => '54',
+        '6' => '12',
         '7' => '22',
         '8' => '55',
         '9' => '48',
@@ -187,7 +187,7 @@ return [
             'money_two' => 0,
             'money_late' => 0,
             'over_sk_days' => 0, // 刷卡期限16天
-            'api_bank_id' => "12",
+            'api_bank_id' => "6",
             'show_money' => '220',
             'poster_url' => 'poster_bank_huaxiayh.png',
             'is_show' => 1,
